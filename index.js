@@ -1,10 +1,5 @@
-const CONFIG = {
-    numberArray: [],
-    numberPath: [],
-    maximumSum: 0,
-    numberSums: [],
-}
-
+let maximumSum = 0;
+let path = [];
 
 document.getElementById("numbers").value = `75
 95 64
@@ -26,50 +21,44 @@ function writeToTriangle() {
     const numbers = document.getElementById("numbers").value
 
     let lines = numbers.split("\n")
-    let numArr = lines.map(line => {
+    let linesArray = lines.map(line => {
+        return line.split(" ")
+    })
+    let numsArray = lines.map(line => {
         return line.split(" ")
     })
 
-    CONFIG.numberArray = numArr
-
-    console.log("PATH STRAIGHT DOWN")
-    findMaxPathSum(CONFIG.numberArray)
-
-    drawTriangle(CONFIG.numberPath)
+    maxSumPath(linesArray)
+    findMaxPathSum(linesArray)
+    drawTriangle(numsArray)
 
 }
 
 function drawTriangle(numArr) {
     const triangle = document.getElementById("triangle")
-    triangle.innerHTML = `<p>Sum of path: ${CONFIG.maximumSum}</p>`;
+    triangle.innerHTML = `<p>Sum of path: ${maximumSum}</p>`;
 
     for (let i = 0; i < numArr.length; i++) {
-        triangle.innerHTML += `<p>${'&nbsp;&nbsp;'.repeat(numArr.length - i - 1)}${numArr[i].join("&nbsp;&nbsp;")}</p>`
+        triangle.innerHTML += `<p>${'&nbsp;&nbsp;'.repeat(numArr.length - i - 1)}${numArr[i].map((number, index) => (path[i] !== index) ? `${number}` : `<span style="color: red;">${number}</span>`).join("&nbsp;&nbsp;")}</p>`
     }
 
+    path = [];
+    maximumSum = 0;
 }
 
 function findMaxPathSum(triangle) {
-    let path = [];
     let previousIndex = 0;
 
     for (let i = 0; i < triangle.length; i++) {
-
         if (triangle[i].length === 1) {
-            let number = triangle[i][0]
-            path.push(number)
-            triangle[i][0] = `<span style="color: red;">${number}</span>`
+            path.push(0)
             continue;
         }
 
         if (Number(triangle[i][previousIndex]) >= Number(triangle[i][previousIndex + 1])) {
-            let number = triangle[i][previousIndex]
-            path.push(number)
-            triangle[i][previousIndex] = `<span style="color: red;">${number}</span>`
+            path.push(previousIndex)
         } else {
-            let number = triangle[i][previousIndex + 1]
-            path.push(number)
-            triangle[i][previousIndex + 1] = `<span style="color: red;">${number}</span>`
+            path.push(previousIndex + 1)
             previousIndex++;
         }
     }
@@ -77,33 +66,27 @@ function findMaxPathSum(triangle) {
     console.log(path)
 
     let max = 0;
-
     path.forEach(num => {
         max += Number(num)
     })
-
-    CONFIG.maximumSum = max;
-    CONFIG.numberPath = triangle;
-
+    maximumSum = max;
 }
 
-function allSums(triangle) {
-    let path = []
-
+function maxSumPath(triangle) {
     for (let i = triangle.length - 2; i >= 0; i--) {
-        let rowSums = []
+        let currentRow = triangle[i].map(Number)
+        let nextRow = triangle[i + 1].map(Number)
 
         for (let j = 0; j < triangle[i].length; j++) {
-            let indexSums = []
-            indexSums.push(triangle[i][j] + triangle[i + 1][j])
-            indexSums.push(triangle[i][j] + triangle[i + 1][j + 1])
+            let current = currentRow[j]
+            let left = nextRow[j]
+            let right = nextRow[j + 1]
 
-            rowSums.push(indexSums)
+            if (current + left >= current + right) {
+                triangle[i][j] = current + left;
+            } else {
+                triangle[i][j] = current + right;
+            }
         }
-
-        path.push(rowSums)
     }
-
-    CONFIG.numberSums = path;
-    console.log(CONFIG.numberSums)
 }
