@@ -20,7 +20,6 @@ function writeToTriangle() {
 
     drawTriangle(CONFIG.numberPath)
 
-
 }
 
 function drawTriangle(numArr) {
@@ -46,7 +45,7 @@ function findMaxPathSum(triangle) {
             continue;
         }
 
-        if (triangle[i][previousIndex] > triangle[i][previousIndex + 1]) {
+        if (triangle[i][previousIndex] >= triangle[i][previousIndex + 1]) {
             let number = triangle[i][previousIndex]
             path.push(number)
             triangle[i][previousIndex] = `<span style="color: red;">${number}</span>`
