@@ -63,13 +63,7 @@ function findMaxPathSum(triangle) {
         }
     }
 
-    console.log(path)
-
-    let max = 0;
-    path.forEach(num => {
-        max += Number(num)
-    })
-    maximumSum = max;
+    console.log("Index Path:", path)  
 }
 
 function maxSumPath(triangle) {
@@ -89,4 +83,5 @@ function maxSumPath(triangle) {
             }
         }
     }
+    maximumSum = triangle[0][0];
 }
